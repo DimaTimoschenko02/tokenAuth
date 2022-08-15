@@ -1,4 +1,3 @@
-
 export interface ILogin{
     password:string,
     id:string;

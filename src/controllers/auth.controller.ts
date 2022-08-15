@@ -1,14 +1,12 @@
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import AuthService from "../services/auth.service";
-
 import config from "config";
 import TokenService from "../services/token.service";
-
-import { decode, sign } from "../utils/jwt.utils";
 import UserDto from "../dtos/user.dto";
-import { get, omit } from "lodash";
-
+import { get } from "lodash";
+import { IUserDocument } from "../models/user.model";
+import setCookie from '../utils/cookies'
 class AuthController {
   expiresIn: string;
   constructor(
@@ -18,7 +16,7 @@ class AuthController {
     this.expiresIn = config.get("jwtExpiration") as string;
   }
   async signin(req: Request, res: Response) {
-    let decoded;
+    let decoded: IUserDocument | null;
     const { body } = req;
     const user = await this.authService.find(body.id);
 
@@ -28,18 +26,13 @@ class AuthController {
     }
     if (!decoded) {
       const userDto = new UserDto(user);
-      const { accessToken, refreshToken } =
-        this.tokenService.generateTokens(userDto);
+      const { accessToken, refreshToken } = this.tokenService.generateTokens(userDto);
       const token = await this.tokenService.saveToken({
         user: user.id,
         accessToken,
         refreshToken,
       });
-      res.cookie("refreshToken", refreshToken, {
-        //expires:10 * 24 * 60 * 60 * 1000,
-        maxAge: 10 * 24 * 60 * 60 * 1000,
-        httpOnly: true,
-      });
+      setCookie(req, res , token.refreshToken)
       return {
         status: 200,
         data: {
@@ -69,21 +62,18 @@ class AuthController {
       refreshToken,
       accessToken,
     });
-    res.cookie("refreshToken", refreshToken, {
-      maxAge: 10 * 24 * 60 * 60 * 1000,
-      httpOnly: true,
-    });
+    setCookie(req, res , refreshToken)
     return { status: 201, data: { accessToken, refreshToken } };
   }
 
   async logout(req: Request, res: Response) {
-    //const token = req.app.get("token");
+    
     const { all } = req.params;
     const refreshToken = get(req.cookies, "refreshToken");
     res.clearCookie("refreshToken");
     if (all === "true") {
-      await this.tokenService.removeAllTokens();
-      return { status: 200, data: "All tokens removed" };
+      const token = await this.tokenService.removeAllTokens();
+      return { status: 200, data: token };
     }
     const token = await this.tokenService.removeToken(refreshToken);
     return { status: 200, data: token };
@@ -92,11 +82,8 @@ class AuthController {
   async refresh(req: Request, res: Response) {
     const refreshToken = get(req.cookies, "refreshToken");
     const tokens = await this.authService.refresh(refreshToken);
-    res.cookie("refreshToken",tokens.refreshToken, {
-      maxAge: 10 * 24 * 60 * 60 * 1000,
-      httpOnly: true,
-    });
-    return {status:200 , data:{tokens}}
+    setCookie(req, res , refreshToken)
+    return { status: 200, data: { tokens } };
   }
 }
 

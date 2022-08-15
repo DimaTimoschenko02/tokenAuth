@@ -14,7 +14,7 @@ const router: Router = Router();
 router.post(
   "/sign-up",
   [validateSchema(authSchema), isExistMiddleware(true)],
-  tryCatchMiddleware(authController.signup.bind(authController))
+  tryCatchMiddleware(authController.signup.bind(authController), true)
 );
 router.post(
   "/sign-in",
@@ -24,9 +24,12 @@ router.post(
 
 router.get(
   "/logout/:all",
-  [validateSchema(logoutSchema), authMiddleware()],
+  [validateSchema(logoutSchema), authMiddleware],
   tryCatchMiddleware(authController.logout.bind(authController))
 );
-router.get('/refresh' , tryCatchMiddleware(authController.refresh.bind(authController)) )
+router.get(
+  "/refresh",
+  tryCatchMiddleware(authController.refresh.bind(authController), true)
+);
 
 export default router;

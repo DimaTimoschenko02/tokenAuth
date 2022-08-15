@@ -1,6 +1,6 @@
 import { bool, boolean, object, string } from "yup";
 
-export const validateEmailPhone = (value:string) => {
+export const validateEmailPhone = (value: string) => {
   const emailRegex =
     /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
 
@@ -18,20 +18,15 @@ export const validateEmailPhone = (value:string) => {
 };
 export const logoutSchema = object({
   params: object({
-    all: string().required()
-})
-})
+    all: string().required(),
+  }),
+});
 export const authSchema = object({
   body: object({
     password: string().required("Name is required"),
     id: string()
-      // .email("Enter a valid email")
       .required("Email/Phone Number is required")
       .test("test-name", "Enter Valid Phone/Email", function (value) {
-        // const emailRegex =
-        //   /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-
-        // const phoneRegex = /\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/; // Change this regex based on requirement
         let isValidEmail = validateEmailPhone(value);
         let isValidPhone = validateEmailPhone(value);
         if (!isValidEmail && !isValidPhone) {
@@ -41,3 +36,4 @@ export const authSchema = object({
       }),
   }),
 });
+

@@ -5,7 +5,7 @@ const router: Router = Router();
 
 router.get(
   "/info",
-  [authMiddleware()],
-  tryCatchMiddleware(userController.getInfo.bind(userController))
+  [authMiddleware],
+  tryCatchMiddleware(userController.getInfo.bind(userController) , true)
 );
 export default router;

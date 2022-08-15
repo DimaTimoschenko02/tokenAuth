@@ -1,10 +1,10 @@
 import jwt from "jsonwebtoken";
 import config from "config";
-import { DocumentDefinition, FilterQuery, Schema } from "mongoose";
+import { DocumentDefinition, FilterQuery } from "mongoose";
 import Token, { ITokenDocument } from "../models/token.model";
 import { IUserDocument } from "../models/user.model";
 import UserDto from "../dtos/user.dto";
-import { sign } from "../utils/jwt.utils";
+
 export default class TokenService {
   accessExpiration: number;
   refreshExpiration: number;
@@ -46,7 +46,7 @@ export default class TokenService {
   }
 
   async removeAllTokens() {
-    return await Token.remove();
+    return await Token.deleteMany();
   }
 
   async validateAccessToken(token:string){

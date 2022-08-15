@@ -1,7 +1,6 @@
 import { AnySchema } from "yup";
 import { Request, Response, NextFunction } from "express";
 import ApiError from "../exeptions/api.error";
-import { get } from "lodash";
 import { authSchema, validateEmailPhone } from "../schemas/auth.shemas";
 
 const validate =
@@ -18,8 +17,7 @@ const validate =
       }
       return next();
     } catch (err: any) {
-      //console.log(err.message);
-      next(new ApiError(err.status | 400, err.message));
+      return next( ApiError.BadRequest(err.message));
     }
   };
 

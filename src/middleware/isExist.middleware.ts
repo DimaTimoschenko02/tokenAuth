@@ -12,9 +12,9 @@ export default function (isNew: boolean) {
       if (isNew && user) throw new ApiError(400, `user with id ${id} alreay exist`);
       if (!isNew && !user) throw new ApiError(400, `user with id ${id} does not exist`);
       next();
-    } catch (err) {
+    } catch (err:any) {
 
-      next(new ApiError(err.status, err.message));
+      return next(ApiError.BadRequest(err.message));
     }
   };
 }
