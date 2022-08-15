@@ -1,0 +1,8 @@
+{
+    "mongoURI": "mongodb+srv://dima:19022002@cluster0.7jsjz11.mongodb.net/?retryWrites=true&w=majority",
+    "jwtSecret": "purumpumpum",
+    "jwtSecretRefresh": "qwerty",
+    "jwtExpiration": 600,
+    "jwtExpirationRefresh": 864000,
+    "PORT": 3001
+  }
