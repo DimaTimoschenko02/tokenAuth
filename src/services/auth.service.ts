@@ -16,6 +16,8 @@ export default class AuthService {
     const tokenFromDB = await this.tokenService.findToken({ refreshToken });
     const user = await User.findOne({ id: tokenFromDB.user });
     const userDto = new UserDto(user);
-    return this.tokenService.generateTokens(userDto);
+    const tokens = this.tokenService.generateTokens(userDto);
+    const tokensFromDB = await this.tokenService.saveToken({user:user.id , ...tokens})
+    return {accessToken:tokensFromDB.accessToken , refreshToken:tokensFromDB.refreshToken}
   }
 }

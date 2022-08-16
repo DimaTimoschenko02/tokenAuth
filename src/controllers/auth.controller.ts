@@ -20,12 +20,13 @@ class AuthController {
     let decoded: IUserDocument | null;
     const { body } = req;
     const user = await this.authService.find(body.id);
-
-    const data = await this.tokenService.findToken({ id: user.id });
+    console.log(user)
+    const data = await this.tokenService.findToken({ user: user.id });
+    console.log(data)
     if (data) {
       decoded = await this.tokenService.validateAccessToken(data.accessToken);
     }
-    if (!decoded) {
+    if (!decoded || !data) {
       const userDto = new UserDto(user);
       const { accessToken, refreshToken } =
         this.tokenService.generateTokens(userDto);

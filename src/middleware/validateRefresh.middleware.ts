@@ -20,6 +20,7 @@ export default async function (
     }
     next();
   } catch (err) {
+    console.log(err)
     return next(ApiError.UnauthorizedError());
   }
 }

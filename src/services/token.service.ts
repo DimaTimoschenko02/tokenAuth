@@ -17,6 +17,7 @@ export default class TokenService {
     this.jwtSecretRefresh = config.get("jwtSecretRefresh") as string;
   }
   generateTokens(payload: UserDto) {
+    console.log(payload)
     return {
       accessToken: jwt.sign({ ...payload }, this.jwtSecret, {
         expiresIn: this.accessExpiration,
