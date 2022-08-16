@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { StatusCodes } from "http-status-codes";
 import ApiError from "../exeptions/api.error";
 import TokenService from "../services/token.service";
 
@@ -6,7 +7,6 @@ export default async (req: Request, res: Response, next: NextFunction) => {
   try {
     const tokenService = new TokenService();
     const headerToken = req?.headers?.authorization;
-
     if (!headerToken) {
       return next(ApiError.UnauthorizedError());
     }
@@ -18,11 +18,10 @@ export default async (req: Request, res: Response, next: NextFunction) => {
     if (!isValid) {
       return next(ApiError.UnauthorizedError());
     }
-
     req.app.set("user", isValid);
 
     next();
   } catch (e: any) {
-    return next(new ApiError(e.status | 403, e.message));
+    return next(new ApiError(e.status | StatusCodes.UNAUTHORIZED, e.message));
   }
 };

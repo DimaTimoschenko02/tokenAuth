@@ -26,46 +26,49 @@ export default class TokenService {
       }),
     };
   }
-  
+
   async saveToken(data: DocumentDefinition<ITokenDocument>) {
     const token = await Token.findOne({ user: data.user });
     if (token) {
-      token.accessToken = data.accessToken
+      token.accessToken = data.accessToken;
       token.refreshToken = data.refreshToken;
       return await token.save();
     }
     return await Token.create(data);
   }
 
-  async findToken(query: FilterQuery<ITokenDocument>):Promise<ITokenDocument> {
-    return await Token.findOne(query)
+  async findToken(query: FilterQuery<ITokenDocument>): Promise<ITokenDocument> {
+    return await Token.findOne(query);
   }
 
   async removeToken(refreshToken: string) {
-    return await Token.deleteOne({refreshToken})
+    return await Token.deleteOne({ refreshToken });
   }
 
   async removeAllTokens() {
     return await Token.deleteMany();
   }
 
-  async validateAccessToken(token:string){
-    try{
-      const decoded:IUserDocument = jwt.verify(token, this.jwtSecret) as IUserDocument;
-      return decoded
-    }catch(err){
-      return null
+  async validateAccessToken(token: string) {
+    try {
+      const decoded: IUserDocument = jwt.verify(
+        token,
+        this.jwtSecret
+      ) as IUserDocument;
+      return decoded;
+    } catch (err) {
+      return null;
     }
-    
   }
-   async validateRefreshToken(token:string){
-    try{
-      const decoded:IUserDocument = jwt.verify(token, this.jwtSecretRefresh) as IUserDocument;
-      return decoded
-    }catch(err){
-      return null
+  async validateRefreshToken(token: string) {
+    try {
+      const decoded: IUserDocument = jwt.verify(
+        token,
+        this.jwtSecretRefresh
+      ) as IUserDocument;
+      return decoded;
+    } catch (err) {
+      return null;
     }
   }
 }
-
-

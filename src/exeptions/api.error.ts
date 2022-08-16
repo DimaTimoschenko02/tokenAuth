@@ -1,3 +1,5 @@
+import { StatusCodes } from "http-status-codes";
+
 class ApiError extends Error {
   status: number;
   message: string;
@@ -7,11 +9,11 @@ class ApiError extends Error {
     this.message = message;
   }
   static UnauthorizedError() {
-    return new ApiError(401, "User is not authorized");
+    return new ApiError(StatusCodes.UNAUTHORIZED, "User is not authorized");
   }
-  static BadRequest(message:string){
-    return new ApiError(400 , message)
-}
+  static BadRequest(message: string) {
+    return new ApiError(StatusCodes.BAD_REQUEST, message);
+  }
 }
 
 export default ApiError;

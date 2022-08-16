@@ -1,12 +1,13 @@
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
+import {StatusCodes} from 'http-status-codes'
 import AuthService from "../services/auth.service";
 import config from "config";
 import TokenService from "../services/token.service";
 import UserDto from "../dtos/user.dto";
 import { get } from "lodash";
 import { IUserDocument } from "../models/user.model";
-import setCookie from '../utils/cookies'
+import setCookie from "../utils/cookies";
 class AuthController {
   expiresIn: string;
   constructor(
@@ -26,15 +27,16 @@ class AuthController {
     }
     if (!decoded) {
       const userDto = new UserDto(user);
-      const { accessToken, refreshToken } = this.tokenService.generateTokens(userDto);
+      const { accessToken, refreshToken } =
+        this.tokenService.generateTokens(userDto);
       const token = await this.tokenService.saveToken({
         user: user.id,
         accessToken,
         refreshToken,
       });
-      setCookie(req, res , token.refreshToken)
+      setCookie(req, res, token.refreshToken);
       return {
-        status: 200,
+        status: StatusCodes.OK,
         data: {
           accessToken: token.accessToken,
           refreshToken: token.refreshToken,
@@ -42,7 +44,7 @@ class AuthController {
       };
     }
 
-    return { status: 200, data: { accessToken: data.accessToken } };
+    return { status: StatusCodes.OK, data: { accessToken: data.accessToken } };
   }
 
   async signup(req: Request, res: Response) {
@@ -62,28 +64,27 @@ class AuthController {
       refreshToken,
       accessToken,
     });
-    setCookie(req, res , refreshToken)
-    return { status: 201, data: { accessToken, refreshToken } };
+    setCookie(req, res, refreshToken);
+    return { status: StatusCodes.CREATED, data: { accessToken, refreshToken } };
   }
 
   async logout(req: Request, res: Response) {
-    
     const { all } = req.params;
     const refreshToken = get(req.cookies, "refreshToken");
     res.clearCookie("refreshToken");
     if (all === "true") {
       const token = await this.tokenService.removeAllTokens();
-      return { status: 200, data: token };
+      return { status: StatusCodes.OK, data: token };
     }
     const token = await this.tokenService.removeToken(refreshToken);
-    return { status: 200, data: token };
+    return { status: StatusCodes.OK, data: token };
   }
 
   async refresh(req: Request, res: Response) {
     const refreshToken = get(req.cookies, "refreshToken");
     const tokens = await this.authService.refresh(refreshToken);
-    setCookie(req, res , refreshToken)
-    return { status: 200, data: { tokens } };
+    setCookie(req, res, refreshToken);
+    return { status: StatusCodes.OK, data: { tokens } };
   }
 }
 

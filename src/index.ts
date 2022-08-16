@@ -17,6 +17,9 @@ app.set('port' , config.get('PORT') || 5555)
 router.init()
 app.use(errorMiddleware)
 
+
+
+
 const PORT = app.get('port')
 const server = app.listen( PORT , () =>{
     console.log(`server is running on port ${PORT}`)

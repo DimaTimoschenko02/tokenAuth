@@ -6,6 +6,11 @@ const router: Router = Router();
 router.get(
   "/info",
   [authMiddleware],
-  tryCatchMiddleware(userController.getInfo.bind(userController) , true)
+  tryCatchMiddleware(userController.getInfo.bind(userController))
+);
+router.get(
+  "/latency",
+  [authMiddleware],
+  tryCatchMiddleware(userController.getLatency.bind(userController))
 );
 export default router;

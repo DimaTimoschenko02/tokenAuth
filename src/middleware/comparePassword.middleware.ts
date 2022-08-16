@@ -8,10 +8,10 @@ export default function () {
       const { id, password } = req.body;
       const user = await User.findOne({ id });
       const isValid = await user.comparePassword(password);
-      if (!isValid) return next(ApiError.BadRequest('uncorrect password'));
+      if (!isValid) return next(ApiError.BadRequest("uncorrect password"));
       next();
     } catch (err) {
-      return next(ApiError.BadRequest('uncorrect password'));
+      return next(ApiError.BadRequest("uncorrect password"));
     }
   };
 }

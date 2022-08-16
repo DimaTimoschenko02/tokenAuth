@@ -6,6 +6,7 @@ import {
   validateSchema,
   comparePassword,
   authMiddleware,
+  validateRefresh,
 } from "../../middleware";
 import { authSchema, logoutSchema } from "../../schemas/auth.shemas";
 
@@ -14,7 +15,7 @@ const router: Router = Router();
 router.post(
   "/sign-up",
   [validateSchema(authSchema), isExistMiddleware(true)],
-  tryCatchMiddleware(authController.signup.bind(authController), true)
+  tryCatchMiddleware(authController.signup.bind(authController))
 );
 router.post(
   "/sign-in",
@@ -29,7 +30,8 @@ router.get(
 );
 router.get(
   "/refresh",
-  tryCatchMiddleware(authController.refresh.bind(authController), true)
+  [validateRefresh],
+  tryCatchMiddleware(authController.refresh.bind(authController))
 );
 
 export default router;
