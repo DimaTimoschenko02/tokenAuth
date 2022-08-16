@@ -10,6 +10,10 @@ class UserController {
     private userService: UserService,
     private tokenService: TokenService
   ) {}
+
+  //task says to extend token on every request i didnt understand if i need to increase token life or 
+  //create another token one from that, it just confuses me, why do i need to increase token life
+  //it is unsave,  if i stole token i can use it and every time it will be valid...
   async getInfo(req: Request, res: Response) {
     const user = req.app.get("user");
     const tokens = this.tokenService.generateTokens(new UserDto(user));
